@@ -1,0 +1,38 @@
+#include <iostream>
+#include <vector>
+
+class Solution {
+public:
+    int count = 0;
+    void backtrack(int row, int n, std::vector<bool>& cols, 
+                   std::vector<bool>& mainDiag, std::vector<bool>& antiDiag) {
+        if (row == n) {
+            count++;
+            return;
+        }
+
+        for (int col = 0; col < n; col++) {
+            int md = row + col;
+            int ad = row - col + n; // Offset '+n' prevents negative index
+
+            if (!cols[col] && !mainDiag[md] && !antiDiag[ad]) {
+                // 1. Place Queen
+                cols[col] = mainDiag[md] = antiDiag[ad] = true;
+                
+                // 2. Recurse
+                backtrack(row + 1, n, cols, mainDiag, antiDiag);
+                
+                // 3. Backtrack (Reset state) - crucial to clear previous placement
+                cols[col] = mainDiag[md] = antiDiag[ad] = false;
+            }
+        }
+    }
+
+    int totalNQueens(int n) {
+        std::vector<bool> cols(n, false);
+        std::vector<bool> mainDiag(2 * n, false);
+        std::vector<bool> antiDiag(2 * n, false);
+        backtrack(0, n, cols, mainDiag, antiDiag);
+        return count;
+    }
+};
