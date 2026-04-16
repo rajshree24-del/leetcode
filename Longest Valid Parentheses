@@ -1,0 +1,35 @@
+#include <iostream>
+#include <string>
+#include <stack>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        stack<int> st;
+        st.push(-1); // Base index for valid substrings starting at index 0
+        int maxLen = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            if (s[i] == '(') {
+                st.push(i);
+            } else {
+                // It's a closing parenthesis ')'
+                st.pop();
+                
+                if (st.empty()) {
+                    // This ')' is unmatched, use it as a new base
+                    st.push(i);
+                } else {
+                    // Valid match found: current index minus index of 
+                    // the element currently at the top of the stack
+                    maxLen = max(maxLen, i - st.top());
+                }
+            }
+        }
+        
+        return maxLen;
+    }
+};
